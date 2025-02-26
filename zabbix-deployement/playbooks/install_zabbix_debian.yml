@@ -2,6 +2,8 @@
 - name: Installer et configurer Zabbix Agent sur Linux (Debian/Ubuntu)
   hosts: tag__Linux_Server
   become: yes
+  vars:
+    zabbix_server: "10.0.10.70"
   tasks:
 
     - name: Installer Zabbix Agent (Debian/Ubuntu)
