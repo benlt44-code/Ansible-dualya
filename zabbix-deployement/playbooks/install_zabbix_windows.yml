@@ -2,7 +2,8 @@
 - name: Installer et configurer Zabbix Agent sur Windows
   hosts: tag__Windows_Server
   tasks:
-
+   vars:
+    zabbix_server: "10.0.10.70"
     - name: Télécharger et installer Zabbix Agent
       win_package:
         path: "https://cdn.zabbix.com/zabbix/binaries/stable/latest/zabbix_agent-6.0.0.msi"
