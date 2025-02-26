@@ -1,0 +1,22 @@
+---
+- name: Installer et configurer Zabbix Agent sur FreeBSD
+  hosts: tag__FreeBSD_Server
+  become: yes
+  tasks:
+
+    - name: Installer Zabbix Agent (FreeBSD)
+      pkgng:
+        name: zabbix-agent
+        state: present
+
+    - name: Configurer Zabbix Agent
+      template:
+        src: zabbix_agentd.conf.j2
+        dest: /usr/local/etc/zabbix_agentd.conf
+      notify: Restart Zabbix Agent
+
+  handlers:
+    - name: Restart Zabbix Agent
+      service:
+        name: zabbix_agentd
+        state: restarted
