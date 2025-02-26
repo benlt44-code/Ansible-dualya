@@ -12,7 +12,7 @@
 
     - name: Configurer Zabbix Agent
       template:
-        src: /var/lib/awx/projects/deploiement-zabbix/templates/zabbix_agentd.conf.j2
+        src: /var/lib/awx/projects/_9__deploiment_zabbix/deploiement-zabbix/templates/zabbix_agentd.conf.j2
         dest: /etc/zabbix/zabbix_agentd.conf
       notify: Restart Zabbix Agent
 
