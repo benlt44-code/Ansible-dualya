@@ -11,7 +11,7 @@
 
     - name: Configurer Zabbix Agent
       win_template:
-        src: zabbix_agentd.conf.j2
+        src: test.conf.j2
         dest: "C:\\Program Files\\Zabbix Agent\\zabbix_agentd.conf"
 
     - name: Redémarrer le service Zabbix Agent
