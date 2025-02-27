@@ -1,9 +1,23 @@
----
 - name: Installer et configurer Zabbix Agent sur Windows
   hosts: tag__Windows_Server
   vars:
     zabbix_server: "10.0.10.70"
   tasks:
+
+    - name: Créer le répertoire temporaire pour Ansible
+      win_file:
+        path: C:\Windows\Temp\ansible
+        state: directory
+
+    - name: Définir les permissions sur le dossier temporaire
+      win_acl:
+        path: C:\Windows\Temp\ansible
+        user: Administrateurs
+        rights: FullControl
+        type: allow
+        inherit: ContainerInherit, ObjectInherit
+        propagation: None
+
     - name: Télécharger et installer Zabbix Agent
       win_package:
         path: "https://cdn.zabbix.com/zabbix/binaries/stable/latest/zabbix_agent-6.0.0.msi"
