@@ -9,15 +9,15 @@
   
     - name: Créer le répertoire temporaire pour Ansible
       win_file:
-        path: C:\Windows\Temp\ansible
+        path: C:\\Windows\\Temp\\ansible
         state: directory
       become: yes
       become_method: runas
 
     - name: Définir les permissions sur le dossier temporaire
       win_acl:
-        path: C:\Windows\Temp\ansible
-        user: "Administrateur  # Vérifier si c'est "Administrateurs" en FR
+        path: C:\\Windows\\Temp\\ansible
+        user: "Administrateurs"  # Vérifier si votre système est en FR, sinon mettre "Administrators"
         rights: FullControl
         type: allow
         inherit: ContainerInherit, ObjectInherit
