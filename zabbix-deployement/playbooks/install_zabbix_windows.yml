@@ -17,7 +17,7 @@
     - name: Définir les permissions sur le dossier temporaire
       win_acl:
         path: C:\Windows\Temp\ansible
-        user: "Administrateur"  # Vérifier si c'est "Administrateurs" en FR
+        user: "Administrateur  # Vérifier si c'est "Administrateurs" en FR
         rights: FullControl
         type: allow
         inherit: ContainerInherit, ObjectInherit
@@ -48,11 +48,9 @@
       become: yes
       become_method: runas
 
-    - name: Configurer Zabbix Agent pour pointer vers le serveur
-      win_lineinfile:
-        path: "{{ zabbix_agent_config_path }}"
-        regexp: "^Server="
-        line: "Server={{ zabbix_server }}"
+    - name: Modifier la configuration Zabbix pour définir le serveur
+      win_shell: |
+        (Get-Content "{{ zabbix_agent_config_path }}") -replace '^Server=.*', 'Server={{ zabbix_server }}' | Set-Content "{{ zabbix_agent_config_path }}"
       become: yes
       become_method: runas
 
