@@ -2,33 +2,63 @@
   hosts: tag__Windows_Server
   vars:
     zabbix_server: "10.0.10.70"
+    zabbix_agent_url: "https://cdn.zabbix.com/zabbix/binaries/stable/latest/zabbix_agent-6.0.0.msi"
+    zabbix_agent_config_path: "C:\\Zabbix\\zabbix_agentd.conf"
+  
   tasks:
-
+  
     - name: Créer le répertoire temporaire pour Ansible
       win_file:
         path: C:\Windows\Temp\ansible
         state: directory
+      become: yes
+      become_method: runas
 
     - name: Définir les permissions sur le dossier temporaire
       win_acl:
         path: C:\Windows\Temp\ansible
-        user: Administrateurs
+        user: "Administrateur"  # Vérifier si c'est "Administrateurs" en FR
         rights: FullControl
         type: allow
         inherit: ContainerInherit, ObjectInherit
         propagation: None
+      become: yes
+      become_method: runas
 
     - name: Télécharger et installer Zabbix Agent
       win_package:
-        path: "https://cdn.zabbix.com/zabbix/binaries/stable/latest/zabbix_agent-6.0.0.msi"
+        path: "{{ zabbix_agent_url }}"
+        product_id: "Zabbix Agent"
         state: present
+        arguments: "/quiet /norestart"
+      become: yes
+      become_method: runas
 
-    - name: Configurer Zabbix Agent
+    - name: Créer le dossier de configuration de Zabbix
+      win_file:
+        path: "C:\\Zabbix"
+        state: directory
+      become: yes
+      become_method: runas
+
+    - name: Copier le fichier de configuration Zabbix
       win_template:
-        src: test.conf.j2
-        dest: "C:\\Program Files\\Zabbix Agent\\zabbix_agentd.conf"
+        src: zabbix_agentd.conf.j2
+        dest: "{{ zabbix_agent_config_path }}"
+      become: yes
+      become_method: runas
+
+    - name: Configurer Zabbix Agent pour pointer vers le serveur
+      win_lineinfile:
+        path: "{{ zabbix_agent_config_path }}"
+        regexp: "^Server="
+        line: "Server={{ zabbix_server }}"
+      become: yes
+      become_method: runas
 
     - name: Redémarrer le service Zabbix Agent
       win_service:
         name: "Zabbix Agent"
         state: restarted
+      become: yes
+      become_method: runas
